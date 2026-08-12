@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>용왕님 수라상 | 부산 수산물 스마트 유통</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Nanum+Myeongjo:wght@700;800&family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="cart.css" />
+  <link rel="stylesheet" href="delivery-detail.css" />
+  <link rel="stylesheet" href="seller-register.css" />
+  <link rel="stylesheet" href="seller-catalog.css" />
+  <link rel="stylesheet" href="seller-location.css" />
+  <link rel="stylesheet" href="inventory-cancel.css" />
+  <link rel="stylesheet" href="inventory-history-clear.css" />
+  <link rel="stylesheet" href="hero-art.css" />
+  <link rel="stylesheet" href="market-prices.css" />
+  <link rel="stylesheet" href="market-featured.css" />
+  <link rel="stylesheet" href="product-art.css" />
+  <link rel="stylesheet" href="quick-actions-fix.css" />
+  <link rel="stylesheet" href="market-cart-controls.css" />
+  <link rel="stylesheet" href="market-live-price.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <section class="hero-card">
+      <nav><div class="brand"><span class="brand-mark">〰</span><span>용왕님<br><b>수라상</b></span></div><div class="nav-links"><a href="#market">오늘의 시세</a><a href="#delivery">공동배송</a><button class="profile" id="profile-button" onclick="openAccount()">로그인</button></div></nav>
+      <div class="hero-content">
+        <div class="hero-copy"><p class="eyebrow">BUSAN SEAFOOD SMART MARKET</p><h1>바다의 신선함을<br><em>가장 똑똑하게</em> 잇다</h1><p>실시간 재고, 투명한 시세, AI 공동 냉장배송까지.<br>부산 수산물 거래의 모든 순간을 연결합니다.</p><button class="primary" onclick="document.querySelector('#market').scrollIntoView({behavior:'smooth'})">오늘의 수산물 보기 <span>→</span></button></div>
+        <div class="wave-art"><div class="sun"></div><div class="boat">⌁<span>⚓</span></div><div class="sea sea1"></div><div class="sea sea2"></div><div class="fish">𓆟</div></div>
+      </div>
+      <div class="hero-stats"><div><strong>1,248<small>건</small></strong><span>오늘의 거래</span></div><div><strong>₩ 18,740<small>만</small></strong><span>절감된 유통비</span></div><div><strong>96.8<small>%</small></strong><span>평균 신선도</span></div><div class="live"><i></i><span>실시간 거래 진행 중</span></div></div>
+    </section>
+
+    <section class="quick-actions"><button class="inventory-action" onclick="document.querySelector('.seller-register').scrollIntoView({behavior:'smooth',block:'center'})"><b>▦</b><span><strong>수산물 재고 등록</strong><small>품목·상태·규격·도매가를 등록하세요</small></span><em>›</em></button><button onclick="openModal('route')"><b>⌁</b><span><strong>공동배송 참여하기</strong><small>다음 출발까지 38분</small></span><em>›</em></button></section>
+
+    <section id="market" class="section-head"><div><p class="eyebrow">LIVE MARKET</p><h2>오늘의 <em>실시간 시세</em></h2><p>2026. 08. 12 오전 10:32 기준 · 부산공동어시장</p></div><button class="ghost">전체 시세 보기 →</button></section>
+    <section class="market-grid">
+      <article class="price-card featured"><div class="card-top"><span class="pill blue">실시간</span><span class="origin">국내산 · 기장</span></div><div class="product-image mackerel">🐟</div><h3>활 고등어</h3><p>1kg / 당일 어획</p><div class="price"><strong>₩ 8,900</strong><span class="up">▲ 3.2%</span></div><div class="bar-row"><span>산지가 ₩6,200</span><span>평균가 ₩8,500</span></div><div class="price-bar"><i style="width:65%"></i></div><button class="add-cart" onclick="addCart('활 고등어',8900)">장바구니 담기 <b>+</b></button></article>
+      <article class="price-card"><div class="card-top"><span class="pill">신선</span><span class="origin">국내산 · 통영</span></div><div class="product-image squid">🦑</div><h3>생물 오징어</h3><p>3미 / 당일 입고</p><div class="price"><strong>₩ 14,500</strong><span class="down">▼ 1.4%</span></div><div class="bar-row"><span>산지가 ₩10,800</span><span>평균가 ₩14,900</span></div><div class="price-bar"><i style="width:72%"></i></div><button class="add-cart" onclick="addCart('생물 오징어',14500)">장바구니 담기 <b>+</b></button></article>
+      <article class="price-card"><div class="card-top"><span class="pill">최상</span><span class="origin">국내산 · 제주</span></div><div class="product-image shrimp">🦐</div><h3>흰다리 새우</h3><p>500g / 새벽 입고</p><div class="price"><strong>₩ 16,800</strong><span class="up">▲ 0.8%</span></div><div class="bar-row"><span>산지가 ₩12,400</span><span>평균가 ₩16,300</span></div><div class="price-bar"><i style="width:58%"></i></div><button class="add-cart" onclick="addCart('흰다리 새우',16800)">장바구니 담기 <b>+</b></button></article>
+    </section>
+
+    <section id="delivery" class="delivery-section"><div class="delivery-copy"><p class="eyebrow">AI COLD-CHAIN DELIVERY</p><h2>함께 실어<br><em>더 신선하고, 더 가볍게</em></h2><p>같은 방향의 주문을 AI가 한 번에 묶어<br>냉장배송 비용과 이동 시간을 줄여드려요.</p><div class="delivery-benefits"><span>✦ 평균 32% 배송비 절감</span><span>✦ 배송 현황 실시간 확인</span></div><button class="cream-btn" onclick="openModal('route')">공동배송 일정 보기 →</button></div><div class="route-card"><div class="route-card-head"><span>오늘의 부산권 공동배송</span><b>마감 임박</b></div><div class="route-map"><div class="map-lines"></div><div class="pin p1">1</div><div class="pin p2">2</div><div class="pin p3">3</div><div class="truck">▰</div><span class="map-label l1">부산공동어시장</span><span class="map-label l2">서면</span><span class="map-label l3">해운대</span></div><div class="route-info"><div><small>다음 출발</small><strong>오후 2:00</strong></div><div><small>함께 가는 주문</small><strong>12건</strong></div><button onclick="openModal('route')">참여하기</button></div></div></section>
+
+    <section class="section-head order-heading"><div><p class="eyebrow">MY ORDER</p><h2>오늘의 <em>주문 현황</em></h2></div><button class="ghost">주문 내역 보기 →</button></section>
+    <section class="orders"><article><div class="order-icon">◎</div><div><span class="status preparing">상품 준비 중</span><h3>기장수산 · 활 고등어 외 3종</h3><p>오늘 오후 2:00 공동배송 예정</p></div><button>상세 보기</button></article><article><div class="order-icon">❄</div><div><span class="status delivering">냉장 배송 중</span><h3>통영바다 · 생물 오징어 10kg</h3><p>배송 기사님이 서면으로 이동 중이에요</p></div><button>배송 확인</button></article></section>
+  </main>
+  <footer><div class="brand"><span class="brand-mark">〰</span><span>용왕님 <b>수라상</b></span></div><span>부산의 바다와 식탁을 가장 가깝게 연결합니다.</span><span>© 2026 Yongwang Table</span></footer>
+  <button class="cart-fab" onclick="openCart()">🛒 <span id="cart-count">0</span></button>
+  <div class="modal-wrap" id="modal"><div class="modal"><button class="close" onclick="closeModal()">×</button><div id="modal-content"></div></div></div>
+  <script src="app.js"></script>
+  <script src="delivery-detail.js"></script>
+  <script src="seller-register.js"></script>
+  <script src="market-prices.js"></script>
+  <script src="market-toggle.js"></script>
+  <script src="market-featured.js"></script>
+  <script src="market-cart-controls.js"></script>
+  <script src="market-live-price.js"></script>
+</body>
+</html>

@@ -1,0 +1,1 @@
+.quick-actions{grid-template-columns:repeat(2,minmax(0,1fr))}.quick-actions .inventory-action{border-color:#9bd7cf;background:linear-gradient(100deg,#f9fffd,#eefaf7)}.quick-actions .inventory-action b{background:#ccefe8;color:#087275}@media(max-width:760px){.quick-actions{grid-template-columns:1fr}}
