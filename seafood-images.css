@@ -1,0 +1,5 @@
+.price-card .product-image.seafood-photo{background-color:#dcefe9;background-position:center;background-size:cover;isolation:isolate}
+.price-card .product-image.seafood-photo:before,.price-card .product-image.seafood-photo:after{display:none}
+.price-card .product-image.fish-photo{background-image:url('assets/seafood-fish-photo.png')}
+.price-card .product-image.octopus-photo{background-image:url('assets/seafood-octopus-photo.png')}
+.price-card .product-image.crab-photo{background-image:url('assets/seafood-crab-photo.png')}
