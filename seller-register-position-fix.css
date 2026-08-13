@@ -1,0 +1,5 @@
+.seller-register{margin:22px 0 34px}
+
+@media(max-width:760px){
+  .seller-register{margin:16px 0 38px}
+}
