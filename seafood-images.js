@@ -5,7 +5,12 @@
     if (/대구|명태/.test(value)) return 'cod-photo';
     if (/광어|가자미|병어/.test(value)) return 'flatfish-photo';
     if (/오징어|갑오징어/.test(value)) return 'squid-photo';
-    if (/게|새우|크랩/.test(value)) return 'crab-photo';
+    if (/새우/.test(value)) return 'shrimp-photo';
+    if (/김/.test(value)) return 'gim-photo';
+    if (/미역/.test(value)) return 'wakame-photo';
+    if (/다시마/.test(value)) return 'kelp-photo';
+    if (/전복|굴|바지락|꼬막|가리비|홍합|소라/.test(value)) return 'shellfish-photo';
+    if (/게|크랩/.test(value)) return 'crab-photo';
     if (/문어|낙지|쭈꾸미/.test(value)) return 'octopus-photo';
     return 'fish-photo';
   };
