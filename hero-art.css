@@ -1,11 +1,68 @@
-/* A calm Busan night-sea illustration, built without emoji glyphs. */
-.wave-art{background:radial-gradient(circle at 69% 29%,#347e90 0 3%,transparent 22%),linear-gradient(130deg,#0c4e67 5%,#15778b 100%)}
-.wave-art:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 12% 21%,#b4f4e859 0 1px,transparent 2px),radial-gradient(circle at 38% 37%,#b4f4e840 0 1px,transparent 2px),radial-gradient(circle at 85% 12%,#b4f4e859 0 1px,transparent 2px);opacity:.9}
-.sun{width:144px;height:144px;right:138px;top:39px;background:radial-gradient(circle at 35% 28%,#ffdfa0,#ffd077 70%);box-shadow:0 0 0 12px #ffd47c0c,0 0 55px #ffd47c77}
-.boat{right:140px;top:161px;width:137px;height:77px;font-size:0;transform:none;color:transparent;z-index:3}
-.boat:before{content:"";position:absolute;left:0;bottom:0;width:137px;height:30px;background:#f7f0d9;clip-path:polygon(0 0,100% 0,83% 80%,18% 100%);filter:drop-shadow(0 8px 5px #00344755)}
-.boat:after{content:"";position:absolute;left:62px;bottom:27px;width:4px;height:89px;background:#f6eed7;box-shadow:1px 0 0 #c5e5db}
-.boat span{display:block;position:absolute;left:6px;top:-10px;width:105px;height:75px;font-size:0;color:transparent;background:linear-gradient(135deg,transparent 49%,#f6eed7 50%) left/54px 69px no-repeat,linear-gradient(45deg,transparent 49%,#6dd1c6 50%) right/50px 62px no-repeat;filter:drop-shadow(0 5px 4px #00344744)}
-.fish{left:110px;top:117px;width:36px;height:15px;color:transparent;font-size:0;border:1.5px solid #77d7ce;border-radius:52% 48% 48% 52%;transform:rotate(-13deg);opacity:.9}.fish:before{content:"";position:absolute;right:-10px;top:1px;width:12px;height:11px;border:1.5px solid #77d7ce;border-left:0;clip-path:polygon(0 50%,100% 0,100% 100%)}.fish:after{content:"";position:absolute;left:9px;top:5px;width:2px;height:2px;border-radius:50%;background:#77d7ce}
-.sea1{height:164px;bottom:-101px;background:linear-gradient(100deg,#0c5570,#0a4d68);transform:rotate(-3deg);border-radius:45% 55% 0 0}.sea2{height:170px;bottom:-124px;background:#063b59;transform:rotate(4deg);border-radius:52% 48% 0 0}.wave-art .sea1:before{content:"";position:absolute;top:27px;left:18%;width:45%;height:1px;background:#8bdcd229;box-shadow:160px 11px 0 #8bdcd221,315px -5px 0 #8bdcd229}
-@media(max-width:760px){.sun{right:45px;top:45px;width:110px;height:110px}.boat{right:43px;top:175px;transform:scale(.78);transform-origin:bottom right}.fish{left:57px;top:144px}}
+/* Refined night-sea hero illustration. */
+.wave-art{
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.035),transparent 58%),
+    linear-gradient(135deg,#0b5269 0%,#13758a 100%);
+}
+.wave-art:before{
+  content:"";position:absolute;inset:0;opacity:.62;
+  background:
+    radial-gradient(circle at 15% 22%,#a8ede2 0 1.5px,transparent 2px),
+    radial-gradient(circle at 39% 39%,#a8ede2 0 1.5px,transparent 2px),
+    radial-gradient(circle at 84% 13%,#a8ede2 0 1.5px,transparent 2px);
+}
+.sun{
+  width:132px;height:132px;right:142px;top:42px;
+  background:linear-gradient(145deg,#ffe2a0,#ffd077);
+  box-shadow:0 0 42px #ffd27a55;
+}
+.boat{
+  right:141px;top:162px;width:140px;height:76px;
+  font-size:0;color:transparent;transform:none;z-index:3;
+  filter:drop-shadow(0 9px 8px #00334652);
+}
+.boat:before{
+  content:"";position:absolute;left:0;bottom:0;width:140px;height:31px;
+  background:#faf4df;
+  clip-path:polygon(0 0,100% 0,82% 78%,18% 100%,7% 42%);
+}
+.boat:after{
+  content:"";position:absolute;left:68px;bottom:27px;width:3px;height:89px;
+  border-radius:2px;background:#fff7df;
+}
+.boat span{
+  display:block;position:absolute;left:13px;top:-3px;width:111px;height:68px;
+  font-size:0;color:transparent;filter:none;
+  background:
+    linear-gradient(135deg,transparent 49%,#fff8e7 50%) left bottom/54px 64px no-repeat,
+    linear-gradient(45deg,transparent 49%,#62c8c0 50%) right bottom/51px 61px no-repeat;
+}
+.fish{
+  left:105px;top:123px;width:32px;height:13px;font-size:0;color:transparent;
+  border:1.4px solid #77d7ce;border-radius:55% 45% 45% 55%;
+  transform:rotate(-12deg);opacity:.72;
+}
+.fish:before{
+  content:"";position:absolute;right:-9px;top:1px;width:10px;height:9px;
+  border:1.4px solid #77d7ce;border-left:0;
+  clip-path:polygon(0 50%,100% 0,100% 100%);
+}
+.fish:after{content:"";position:absolute;left:8px;top:4px;width:2px;height:2px;border-radius:50%;background:#77d7ce}
+.sea{left:-9%;width:118%}
+.sea1{
+  height:118px;bottom:-69px;transform:rotate(-1.8deg);
+  border-radius:52% 48% 0 0;background:linear-gradient(105deg,#0a536e,#0d6075);
+}
+.sea2{
+  height:124px;bottom:-91px;transform:rotate(3.2deg);
+  border-radius:48% 52% 0 0;background:#063b59;
+}
+.wave-art .sea1:before{
+  content:"";position:absolute;top:20px;left:40%;width:42%;height:1px;
+  background:linear-gradient(90deg,transparent,#86d8cf45,transparent);
+}
+@media(max-width:760px){
+  .sun{right:42px;top:42px;width:104px;height:104px}
+  .boat{right:38px;top:170px;transform:scale(.74);transform-origin:bottom right}
+  .fish{left:55px;top:144px}.sea1{bottom:-72px}.sea2{bottom:-94px}
+}
