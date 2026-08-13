@@ -32,7 +32,11 @@
       else { if (price) price.textContent = money(lowest.wholesale_price); button.disabled = false; button.innerHTML = '0.5kg 장바구니 담기 <b>+</b>'; button.onclick = () => window.addCatalogCart?.(name, { state: oldState, process: oldProcess }); }
     });
     const grid = document.querySelector('.market-grid');
-    if (grid) [...grid.querySelectorAll('.catalog-price')].sort((a,b) => Number(a.classList.contains('inventory-sold-out')) - Number(b.classList.contains('inventory-sold-out'))).forEach(card => grid.append(card));
+    if (grid) {
+      const current = [...grid.querySelectorAll('.catalog-price')];
+      const sorted = [...current].sort((a,b) => Number(a.classList.contains('inventory-sold-out')) - Number(b.classList.contains('inventory-sold-out')));
+      if (sorted.some((card,index) => card !== current[index])) sorted.forEach(card => grid.append(card));
+    }
   }
   document.addEventListener('change', event => { if (event.target.matches('.seafood-state-select,.seafood-process-select')) updateCatalogStock(); });
   document.addEventListener('click', event => { const button = event.target.closest('.catalog-price .add-cart'); if (!button || button.disabled) return; event.preventDefault(); event.stopImmediatePropagation(); const card = button.closest('.catalog-price'); window.addCatalogCart?.(card?.dataset.product, { state: card?.querySelector('.seafood-state-select')?.value || '', process: card?.querySelector('.seafood-process-select')?.value || '' }); }, true);
