@@ -1,21 +1,17 @@
 (() => {
-  const inventoryKey='yongwang-seller-inventory';
-  const readInventory=()=>{try{return JSON.parse(localStorage.getItem(inventoryKey))||[]}catch{return []}};
-  const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[char]));
-  const renderSellerListings=()=>{
-    const grid=document.querySelector('.market-grid');if(!grid)return;
-    grid.querySelectorAll('.seller-listing-card').forEach(card=>card.remove());
-    readInventory().forEach((item,index)=>{
-      const price=Number(item.price)||0;
-      const name=item.display||item.type||'판매자 등록 수산물';
-      const card=document.createElement('article');
-      card.className='price-card seller-listing-card';
-      card.dataset.liveReady='1';
-      card.dataset.product=name;
-      card.innerHTML=`<div class="card-top"><span class="pill seller-pill">판매자 등록</span><span class="origin">${escapeHtml(item.location||'등록 장소 미입력')}</span></div><div class="product-image seller-product-art"></div><h3>${escapeHtml(name)}</h3><p>${escapeHtml(item.owner||'판매자')} · 재고 ${escapeHtml(item.quantity||'')} ${escapeHtml(item.unit||'')}</p><div class="seller-price-box"><span>판매자 등록 도매가</span><strong>₩ ${price.toLocaleString()}</strong><small>등록 가격 그대로 판매</small></div><button class="add-cart" onclick="addCart('${String(name).replace(/'/g,"\\'")}',${price})">이 가격으로 구매하기 <b>+</b></button></article>`;
-      grid.prepend(card);
-    });
-  };
-  renderSellerListings();
-  setInterval(renderSellerListings,1200);
+  const URL='https://khuuazwwxlggsfvvofsu.supabase.co/rest/v1';
+  const KEY='sb_publishable_Ny50rb2ZsvuwZ_bR9d1uHw_6dxXgTdO';
+  const headers={'apikey':KEY,'Authorization':'Bearer '+KEY,'Content-Type':'application/json'};
+  const grid=()=>document.querySelector('.market-grid');
+  const money=value=>'₩ '+Number(value||0).toLocaleString();
+  const escape=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[char]));
+  async function getInventory(){const response=await fetch(URL+'/seafood_inventory?quantity=gt.0&order=created_at.desc',{headers});if(!response.ok)throw new Error('inventory load failed');return response.json()}
+  function render(items){const root=grid();if(!root)return;root.querySelectorAll('.seller-listing-card').forEach(card=>card.remove());items.forEach(item=>{const card=document.createElement('article');card.className='price-card seller-listing-card';card.innerHTML=`<div class="card-top"><span class="pill seller-pill">판매자 재고</span><span class="origin">${escape(item.location)}</span></div><div class="product-image seller-product-art"></div><h3>${escape(item.product_name)}</h3><p>${escape(item.seller_name)} · 남은 재고 ${item.quantity}${escape(item.unit)}</p><div class="seller-price-box"><span>판매자 등록 도매가</span><strong>${money(item.wholesale_price)}</strong><small>등록 가격 그대로 구매 가능</small></div><button class="add-cart" onclick="addRemoteCart('${item.id}','${escape(item.product_name).replace(/'/g,"\\'")}',${item.wholesale_price},${item.quantity})">이 가격으로 구매하기 <b>+</b></button>`;root.prepend(card)})}
+  async function refresh(){try{render(await getInventory())}catch(error){console.warn('Supabase inventory unavailable',error)}}
+  window.addRemoteCart=(id,name,price,available)=>{const existing=cart.find(item=>item.remoteInventoryId===id);if(existing){if(existing.quantity>=available){toast('판매자 재고보다 많이 담을 수 없어요.');return}existing.quantity++}else cart.push({name,price,quantity:1,remoteInventoryId:id,available});if(typeof saveCart==='function')saveCart();updateCartBadge();toast(name+'을(를) 장바구니에 담았어요.')};
+  const sellerForm=document.querySelector('#seller-form');
+  if(sellerForm)sellerForm.addEventListener('submit',event=>{const owner=typeof currentUser==='function'?currentUser():'';if(!owner)return;const q=id=>sellerForm.querySelector(id);const price=Number(q('#seller-price')?.value.replace(/[^0-9]/g,'')),quantity=Number(q('#seller-quantity')?.value),location=q('#seller-location')?.value.trim();if(!price||!quantity||!location)return;const data={seller_name:owner,category:q('#seller-category').selectedOptions[0].text,product_name:q('#seller-preview').textContent,product_state:q('#seller-condition').value,processing_type:q('#seller-process').value,specification:q('#seller-spec').value||'대',unit:q('#seller-unit').value,wholesale_price:price,quantity,location};setTimeout(async()=>{try{const response=await fetch(URL+'/seafood_inventory',{method:'POST',headers:{...headers,'Prefer':'return=representation'},body:JSON.stringify(data)});if(!response.ok)throw new Error(await response.text());toast('공유 재고로 등록되었습니다.');refresh()}catch(error){console.error(error);toast('공유 재고 등록에 실패했습니다. 네트워크를 확인해주세요.')}},0)},true);
+  const originalPlaceOrder=window.placeOrder;
+  window.placeOrder=async()=>{const remoteItems=cart.filter(item=>item.remoteInventoryId);if(!remoteItems.length){originalPlaceOrder();return}if(!currentUser()){closeModal();toast('주문하려면 먼저 로그인해주세요.');openLogin();return}try{for(const item of remoteItems){const response=await fetch(URL+'/rpc/purchase_inventory',{method:'POST',headers,body:JSON.stringify({item_id:item.remoteInventoryId,requested_quantity:item.quantity})});if(!response.ok)throw new Error(item.name+' 재고가 부족합니다.')}originalPlaceOrder();refresh()}catch(error){console.error(error);toast(error.message||'재고가 부족하거나 구매 처리에 실패했습니다.')}};
+  refresh();setInterval(refresh,5000);
 })();
