@@ -38,13 +38,13 @@
     const supply = related.reduce((sum, item) => sum + Math.max(0, Number(item.quantity) || 0), 0);
     const demand = purchases.filter(item => matches(item.product_name, name)).reduce((sum, item) => sum + (Number(item.quantity) || 0), 0);
     const listedPrice = Number(related.find(item => Number(item.quantity) > 0)?.wholesale_price || related[0]?.wholesale_price || 0);
-    const unavailable = related.length > 0 && supply <= 0;
+    const unavailable = related.length > 0 && supply < 500;
     const details = ensureDetails(card);
     const values = details.querySelectorAll('b');
     values[0].textContent = listedPrice ? money(listedPrice) : '등록 없음';
     values[1].textContent = unavailable ? '거래 중지' : (listedPrice ? money(listedPrice) : '재고 없음');
-    values[2].textContent = `${demand}kg`;
-    values[3].textContent = `${supply}kg`;
+    values[2].textContent = `${demand}g`;
+    values[3].textContent = `${supply}g`;
     const change = card.querySelector('.price .up, .price .down');
     if (change) {
       change.textContent = unavailable ? '거래 중지' : (related.length ? '실제 거래 기준' : '등록 재고 없음');

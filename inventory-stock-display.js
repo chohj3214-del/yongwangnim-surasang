@@ -8,7 +8,7 @@
       const name = card.querySelector('h3')?.textContent.trim();
       if (!name) return;
       const matches = inventory.filter(item => normalize(item.product_name).includes(normalize(name)));
-      const availableItems = matches.filter(item => Number(item.quantity) > 0);
+      const availableItems = matches.filter(item => Number(item.quantity) >= 500);
       const total = matches.reduce((sum, item) => sum + Math.max(0, Number(item.quantity) || 0), 0);
       let stock = card.querySelector('.catalog-stock');
       if (!stock) {
@@ -16,13 +16,13 @@
         stock.className = 'catalog-stock';
         card.querySelector('h3')?.after(stock);
       }
-      stock.textContent = total > 0 ? `실시간 재고 ${total}kg` : '실시간 재고 0kg · 거래 중지';
+      stock.textContent = total >= 500 ? `실시간 재고 ${total}g` : '실시간 재고 500g 미만 · 거래 중지';
       const button = card.querySelector('.add-cart');
       card.classList.toggle('inventory-sold-out', total <= 0);
       if (!button) return;
-      if (total <= 0) {
+      if (total < 500) {
         button.disabled = true;
-        button.innerHTML = '재고 없음 <b>—</b>';
+        button.innerHTML = '재고 부족 <b>—</b>';
         button.onclick = null;
       } else {
         const item = availableItems[0];
