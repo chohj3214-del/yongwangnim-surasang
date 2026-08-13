@@ -7,5 +7,5 @@
     return originalAddCart(name,price);
   };
   const originalRemoteAdd=window.addRemoteCart;
-  window.addRemoteCart=(id,name,price,available)=>{if(Number(available)<=0){toast('재고가 없어 거래 중지된 상품은 장바구니에 담을 수 없습니다.');return}return originalRemoteAdd(id,name,price,available)};
+  window.addRemoteCart=(...args)=>{const available=args[3];if(Number(available)<=0){toast('재고가 없어 거래 중지된 상품은 장바구니에 담을 수 없습니다.');return}return originalRemoteAdd(...args)};
 })();
