@@ -50,6 +50,12 @@
       } catch (error) { console.warn('Account lookup failed', error); }
     }
     localLogin();
+    setTimeout(async () => {
+      const account = users()[name];
+      if (name && account) {
+        try { await syncAccount(name, account.role || 'consumer'); } catch (error) { console.warn('Existing account sync failed', error); }
+      }
+    }, 0);
   };
 
   syncAccount('admin', 'admin').catch(error => console.warn('Admin sync failed', error));

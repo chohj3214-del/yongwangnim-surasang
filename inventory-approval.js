@@ -12,7 +12,7 @@
     try{
       const [response,accountResponse]=await Promise.all([fetch(URL+'?select=id,seller_name,product_name,quantity,unit,wholesale_price,location,approval_status,created_at,purchase_transactions(id)&order=created_at.desc',{headers}),fetch(ACCOUNT_URL+'?select=display_name,role,created_at,is_deleted&is_deleted=eq.false&order=created_at.desc',{headers})]);
       if(!response.ok)throw new Error('inventory load failed');
-      const items=await response.json(),accounts=accountResponse.ok?await accountResponse.json():[],pending=items.filter(item=>item.approval_status==='pending'),approved=items.filter(item=>item.approval_status==='approved'),rejected=items.filter(item=>item.approval_status==='rejected');
+      const items=await response.json(),localAccounts=Object.entries(typeof users==='function'?users():{}).map(([display_name,account])=>({display_name,role:account.role||'consumer',created_at:account.created_at||new Date().toISOString(),is_deleted:false})),accounts=accountResponse.ok?await accountResponse.json():localAccounts,pending=items.filter(item=>item.approval_status==='pending'),approved=items.filter(item=>item.approval_status==='approved'),rejected=items.filter(item=>item.approval_status==='rejected');
       const details=item=>`<div><b>${esc(item.product_name)}</b><small>${esc(item.seller_name)} · ${item.quantity}kg · ${esc(item.location)}</small><em>kg당 ₩ ${Number(item.wholesale_price).toLocaleString()}</em></div>`;
       const purchased=item=>Array.isArray(item.purchase_transactions)&&item.purchase_transactions.length>0;
       const deleteButton=item=>purchased(item)?'<button class="delete-inventory" disabled>구매 이력 보관</button>':`<button class="delete-inventory" onclick="deleteInventory('${item.id}')">상품 삭제</button>`;
