@@ -37,7 +37,10 @@
     const related = inventory.filter(item => matches(item.product_name, name));
     const supply = related.reduce((sum, item) => sum + Math.max(0, Number(item.quantity) || 0), 0);
     const demand = purchases.filter(item => matches(item.product_name, name)).reduce((sum, item) => sum + (Number(item.quantity) || 0), 0);
-    const listedPrice = Number(related.find(item => Number(item.quantity) > 0)?.wholesale_price || related[0]?.wholesale_price || 0);
+    const selectedId = card.dataset.selectedInventoryId || '';
+    const selectedInventory = related.find(item => String(item.id) === String(selectedId));
+    const listedPrice = Number(selectedInventory?.wholesale_price || related.find(item => Number(item.quantity) > 0)?.wholesale_price || related[0]?.wholesale_price || 0);
+    const purchaseQuantity = Number(card.dataset.purchaseQuantity || .5);
     const unavailable = related.length > 0 && supply < .5;
     const details = ensureDetails(card);
     const values = details.querySelectorAll('b');
@@ -45,6 +48,9 @@
     values[1].textContent = unavailable ? '거래 중지' : (listedPrice ? money(listedPrice) : '재고 없음');
     values[2].textContent = `${demand}kg`;
     values[3].textContent = `${supply}kg`;
+    const totalPrice = listedPrice * purchaseQuantity;
+    const price = card.querySelector('.price strong');
+    if (price && listedPrice && !unavailable) price.textContent = money(totalPrice);
     const change = card.querySelector('.price .up, .price .down');
     if (change) {
       change.textContent = unavailable ? '거래 중지' : (related.length ? '실제 거래 기준' : '등록 재고 없음');
@@ -61,6 +67,7 @@
 
   new MutationObserver(refresh).observe(document.querySelector('.market-grid'), { childList: true });
   window.addEventListener('inventory-refreshed', refresh);
+  window.addEventListener('catalog-price-selection-changed', refresh);
   refresh();
   setInterval(refresh, 5000);
 })();
