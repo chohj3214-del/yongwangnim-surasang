@@ -32,7 +32,8 @@
       const previousId = card.dataset.selectedInventoryId || '';
       const selectedItem = available.find(item => String(item.id) === previousId) || lowest;
       card.dataset.selectedInventoryId = selectedItem ? String(selectedItem.id) : '';
-      priceChoices.innerHTML = selectedItem ? `구매 가격 선택<select class="seafood-price-select">${available.map(item => `<option value="${item.id}" ${String(item.id) === String(selectedItem.id) ? 'selected' : ''}>${money(item.wholesale_price)}/kg · 재고 ${Number(item.quantity).toLocaleString()}kg · ${item.location || '부산'}</option>`).join('')}</select>` : '';
+      if (selectedItem) priceChoices.innerHTML = `구매 가격 선택<select class="seafood-price-select">${available.map(item => `<option value="${item.id}" ${String(item.id) === String(selectedItem.id) ? 'selected' : ''}>${money(item.wholesale_price)}/kg · 재고 ${Number(item.quantity).toLocaleString()}kg · ${item.location || '부산'}</option>`).join('')}</select>`;
+      else priceChoices.remove();
       const price = card.querySelector('.price strong'), button = card.querySelector('.add-cart'); if (!button) return;
       if (!selectedItem) { if (price) price.textContent = '재고 없음'; button.disabled = true; button.innerHTML = '거래 중지 <b>—</b>'; button.onclick = null; }
       else { if (price) price.textContent = money(selectedItem.wholesale_price); button.disabled = false; button.innerHTML = '0.5kg 장바구니 담기 <b>+</b>'; }
