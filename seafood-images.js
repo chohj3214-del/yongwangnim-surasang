@@ -30,6 +30,7 @@
     if (/참돔/.test(value)) return 'red-seabream-photo';
     if (/방어/.test(value)) return 'yellowtail-photo';
     if (/삼치/.test(value)) return 'spanish-mackerel-photo';
+    if (/갈치/.test(value)) return 'hairtail-photo';
     if (/조기/.test(value)) return 'yellow-croaker-photo';
     if (/아귀/.test(value)) return 'monkfish-photo';
     if (/멸치/.test(value)) return 'anchovy-photo';
