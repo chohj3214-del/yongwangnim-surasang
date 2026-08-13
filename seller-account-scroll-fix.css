@@ -1,0 +1,2 @@
+.modal:has(.seller-account-panel){max-height:82vh;overflow-y:auto}
+.seller-account-panel{max-height:none;overflow:visible;padding-bottom:4px}
