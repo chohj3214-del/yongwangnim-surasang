@@ -27,9 +27,15 @@
       let soldOutLabel = card.querySelector('.sold-out-label');
       if (soldOut && !soldOutLabel) { soldOutLabel = document.createElement('b'); soldOutLabel.className = 'sold-out-label'; soldOutLabel.textContent = 'SOLD OUT'; card.append(soldOutLabel); }
       if (!soldOut && soldOutLabel) soldOutLabel.remove();
+      let priceChoices = card.querySelector('.price-choices');
+      if (!priceChoices) { priceChoices = document.createElement('label'); priceChoices.className = 'price-choices'; stock.after(priceChoices); }
+      const previousId = card.dataset.selectedInventoryId || '';
+      const selectedItem = available.find(item => String(item.id) === previousId) || lowest;
+      card.dataset.selectedInventoryId = selectedItem ? String(selectedItem.id) : '';
+      priceChoices.innerHTML = selectedItem ? `구매 가격 선택<select class="seafood-price-select">${available.map(item => `<option value="${item.id}" ${String(item.id) === String(selectedItem.id) ? 'selected' : ''}>${money(item.wholesale_price)}/kg · 재고 ${Number(item.quantity).toLocaleString()}kg · ${item.location || '부산'}</option>`).join('')}</select>` : '';
       const price = card.querySelector('.price strong'), button = card.querySelector('.add-cart'); if (!button) return;
-      if (!lowest) { if (price) price.textContent = '재고 없음'; button.disabled = true; button.innerHTML = '거래 중지 <b>—</b>'; button.onclick = null; }
-      else { if (price) price.textContent = money(lowest.wholesale_price); button.disabled = false; button.innerHTML = '0.5kg 장바구니 담기 <b>+</b>'; button.onclick = () => window.addCatalogCart?.(name, { state: oldState, process: oldProcess }); }
+      if (!selectedItem) { if (price) price.textContent = '재고 없음'; button.disabled = true; button.innerHTML = '거래 중지 <b>—</b>'; button.onclick = null; }
+      else { if (price) price.textContent = money(selectedItem.wholesale_price); button.disabled = false; button.innerHTML = '0.5kg 장바구니 담기 <b>+</b>'; }
     });
     const grid = document.querySelector('.market-grid');
     if (grid) {
@@ -39,8 +45,8 @@
       if (sorted.some((card, index) => card !== cards[index])) sorted.forEach(card => grid.appendChild(card));
     }
   }
-  document.addEventListener('change', event => { if (event.target.matches('.seafood-state-select,.seafood-process-select')) updateCatalogStock(); });
-  document.addEventListener('click', event => { const button = event.target.closest('.catalog-price .add-cart'); if (!button || button.disabled) return; event.preventDefault(); event.stopImmediatePropagation(); const card = button.closest('.catalog-price'); window.addCatalogCart?.(card?.dataset.product, { state: card?.querySelector('.seafood-state-select')?.value || '', process: card?.querySelector('.seafood-process-select')?.value || '' }); }, true);
+  document.addEventListener('change', event => { if (event.target.matches('.seafood-state-select,.seafood-process-select')) { const card = event.target.closest('.catalog-price'); if (card) card.dataset.selectedInventoryId = ''; updateCatalogStock(); } if (event.target.matches('.seafood-price-select')) { const card = event.target.closest('.catalog-price'); if (card) { card.dataset.selectedInventoryId = event.target.value; updateCatalogStock(); } } });
+  document.addEventListener('click', event => { const button = event.target.closest('.catalog-price .add-cart'); if (!button || button.disabled) return; event.preventDefault(); event.stopImmediatePropagation(); const card = button.closest('.catalog-price'); window.addCatalogCart?.(card?.dataset.product, { state: card?.querySelector('.seafood-state-select')?.value || '', process: card?.querySelector('.seafood-process-select')?.value || '', inventoryId: card?.dataset.selectedInventoryId || '' }); }, true);
   window.addEventListener('inventory-refreshed', updateCatalogStock); window.addEventListener('catalog-rendered', updateCatalogStock);
   new MutationObserver(updateCatalogStock).observe(document.querySelector('.market-grid'), { childList: true }); setInterval(updateCatalogStock, 1000); updateCatalogStock();
 })();
