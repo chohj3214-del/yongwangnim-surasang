@@ -23,7 +23,7 @@
   window.openSellerNotifications = async () => {
     const list = await load();
     if (!list.length) { showModal('<h2>판매 알림</h2><p>아직 새 판매 알림이 없습니다.</p>'); return; }
-    showModal(`<h2>판매 알림</h2><p>구매가 완료된 상품을 확인하세요.</p><div class="sale-notification-list">${list.map(item => `<article class="${item.read_at ? '' : 'unread'}"><i>✓</i><div><b>${esc(item.product_name)} ${item.quantity}kg 판매</b><small>구매자 ${esc(item.buyer_name)} · ${date(item.created_at)}</small></div></article>`).join('')}</div><button class="submit" onclick="markSellerNotificationsRead()">확인했습니다</button>`);
+    showModal(`<h2>판매 알림</h2><p>구매가 완료된 상품을 확인하세요.</p><div class="sale-notification-list">${list.map(item => `<article class="${item.read_at ? '' : 'unread'}"><i>✓</i><div><b>${esc(item.product_name)} ${item.quantity}kg 판매</b><small>판매 완료 · ${date(item.created_at)}</small></div></article>`).join('')}</div><button class="submit" onclick="markSellerNotificationsRead()">확인했습니다</button>`);
   };
   window.markSellerNotificationsRead = async () => {
     const seller = currentUser();
