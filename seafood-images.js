@@ -4,7 +4,8 @@
     if (/연어/.test(value)) return 'salmon-photo';
     if (/대구/.test(value)) return 'cod-distinct-photo';
     if (/명태/.test(value)) return 'pollock-photo';
-    if (/광어|가자미|병어/.test(value)) return 'flatfish-photo';
+    if (/병어/.test(value)) return 'butterfish-photo';
+    if (/광어|가자미/.test(value)) return 'flatfish-photo';
     if (/갑오징어/.test(value)) return 'cuttlefish-photo';
     if (/오징어/.test(value)) return 'squid-photo';
     if (/새우/.test(value)) return 'shrimp-photo';
@@ -30,6 +31,8 @@
     if (/방어/.test(value)) return 'yellowtail-photo';
     if (/삼치/.test(value)) return 'spanish-mackerel-photo';
     if (/조기/.test(value)) return 'yellow-croaker-photo';
+    if (/아귀/.test(value)) return 'monkfish-photo';
+    if (/멸치/.test(value)) return 'anchovy-photo';
     return 'fish-photo';
   };
   const applyPhotos = () => document.querySelectorAll('.price-card').forEach(card => {
