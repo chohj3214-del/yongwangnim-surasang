@@ -1,10 +1,66 @@
 (() => {
-  const prices=new Map();
-  const currency=value=>'₩ '+Math.round(value/10)*10..toLocaleString();
-  function setup(card,index=0){if(card.dataset.liveReady)return;const name=card.querySelector('h3')?.textContent.trim(),priceEl=card.querySelector('.price strong');if(!name||!priceEl)return;const initial=Number((priceEl.textContent||'').replace(/[^0-9]/g,''))||8900;const wholesale=Math.round(initial*(.63+(index%8)*.015)/10)*10;prices.set(name,{buy:initial,previous:initial,wholesale,base:initial,demand:52+(index*7%33),supply:48+(index*11%34)});card.dataset.liveReady='1';const price=card.querySelector('.price');const details=document.createElement('div');details.className='live-price-details';details.innerHTML='<span>도매가 <b></b></span><span>구매 가능가 <b></b></span><span class="supply-demand">수요 <b></b></span><span class="supply-demand">공급 <b></b></span>';price.after(details);card.dataset.product=name;updateCard(card);}
-  function updateCard(card){const entry=prices.get(card.dataset.product);if(!entry)return;const suspended=entry.supply===0||card.classList.contains('inventory-sold-out');const change=((entry.buy-entry.previous)/entry.previous*100)||0;const priceEl=card.querySelector('.price strong'),changeEl=card.querySelector('.price .up,.price .down'),details=card.querySelector('.live-price-details');priceEl.textContent=currency(entry.buy);if(changeEl){changeEl.textContent=suspended?'거래 대기':(change>=0?'▲ ':'▼ ')+Math.abs(change).toFixed(1)+'%';changeEl.className=suspended?'supply-empty':(change>=0?'up':'down')}if(details){const vals=details.querySelectorAll('b');vals[0].textContent=currency(entry.wholesale);vals[1].textContent=suspended?'공급 없음':currency(entry.buy);vals[2].textContent=entry.demand;vals[3].textContent=entry.supply}card.querySelector('.price-bar i')?.style.setProperty('width',suspended?'0%':Math.max(18,Math.min(92,50+(entry.demand-entry.supply)*1.15))+'%');}
-  function setupAll(){document.querySelectorAll('.price-card').forEach((card,index)=>setup(card,index))}
-  setupAll();new MutationObserver(setupAll).observe(document.querySelector('.market-grid'),{childList:true});
-  setInterval(()=>{prices.forEach(entry=>{if(entry.supply===0)return;entry.previous=entry.buy;entry.demand=Math.max(0,Math.min(100,entry.demand+Math.round((Math.random()-.46)*16)));entry.supply=Math.max(0,Math.min(100,entry.supply+Math.round((Math.random()-.55)*20)));if(entry.supply>0){const premium=(entry.demand-entry.supply)*.0075;entry.buy=Math.max(entry.wholesale+300,Math.round(entry.base*(1+premium)/10)*10)}});document.querySelectorAll('.price-card').forEach(updateCard)},3500);
-  document.addEventListener('click',event=>{const button=event.target.closest('.add-cart');if(!button)return;const card=button.closest('.price-card'),name=card?.dataset.product,entry=prices.get(name);if(!entry)return;event.preventDefault();event.stopImmediatePropagation();addCart(name,entry.buy)},true);
+  const URL = 'https://khuuazwwxlggsfvvofsu.supabase.co/rest/v1';
+  const KEY = 'sb_publishable_Ny50rb2ZsvuwZ_bR9d1uHw_6dxXgTdO';
+  const headers = { apikey: KEY, Authorization: 'Bearer ' + KEY };
+  const normalize = value => String(value || '').replace(/\s/g, '');
+  const money = value => `₩ ${Number(value || 0).toLocaleString()}`;
+  const matches = (storedName, cardName) => {
+    const stored = normalize(storedName), card = normalize(cardName);
+    return stored.includes(card) || card.includes(stored);
+  };
+
+  async function loadPurchases() {
+    try {
+      const response = await fetch(URL + '/purchase_transactions?select=product_name,quantity', { headers });
+      if (!response.ok) throw new Error('purchase data unavailable');
+      return response.json();
+    } catch (error) {
+      console.warn('Purchase data unavailable', error);
+      return [];
+    }
+  }
+
+  function ensureDetails(card) {
+    let details = card.querySelector('.live-price-details');
+    if (details) return details;
+    details = document.createElement('div');
+    details.className = 'live-price-details';
+    details.innerHTML = '<span>등록 도매가 <b></b></span><span>구매 가능가 <b></b></span><span class="supply-demand">실구매 수요 <b></b></span><span class="supply-demand">남은 공급 <b></b></span>';
+    (card.querySelector('.seller-price-box') || card.querySelector('.price'))?.after(details);
+    return details;
+  }
+
+  function updateCard(card, purchases) {
+    const name = card.querySelector('h3')?.textContent.trim();
+    if (!name) return;
+    const inventory = Array.isArray(window.approvedInventorySnapshot) ? window.approvedInventorySnapshot : [];
+    const related = inventory.filter(item => matches(item.product_name, name));
+    const supply = related.reduce((sum, item) => sum + Math.max(0, Number(item.quantity) || 0), 0);
+    const demand = purchases.filter(item => matches(item.product_name, name)).reduce((sum, item) => sum + (Number(item.quantity) || 0), 0);
+    const listedPrice = Number(related.find(item => Number(item.quantity) > 0)?.wholesale_price || related[0]?.wholesale_price || 0);
+    const unavailable = related.length > 0 && supply <= 0;
+    const details = ensureDetails(card);
+    const values = details.querySelectorAll('b');
+    values[0].textContent = listedPrice ? money(listedPrice) : '등록 없음';
+    values[1].textContent = unavailable ? '거래 중지' : (listedPrice ? money(listedPrice) : '재고 없음');
+    values[2].textContent = `${demand}kg`;
+    values[3].textContent = `${supply}kg`;
+    const change = card.querySelector('.price .up, .price .down');
+    if (change) {
+      change.textContent = unavailable ? '거래 중지' : (related.length ? '실제 거래 기준' : '등록 재고 없음');
+      change.className = unavailable ? 'supply-empty' : 'up';
+    }
+    const bar = card.querySelector('.price-bar i');
+    if (bar) bar.style.width = related.length ? `${unavailable ? 0 : Math.max(18, Math.min(92, 30 + supply * 5))}%` : '0%';
+  }
+
+  async function refresh() {
+    const purchases = await loadPurchases();
+    document.querySelectorAll('.price-card').forEach(card => updateCard(card, purchases));
+  }
+
+  new MutationObserver(refresh).observe(document.querySelector('.market-grid'), { childList: true });
+  window.addEventListener('inventory-refreshed', refresh);
+  refresh();
+  setInterval(refresh, 5000);
 })();
