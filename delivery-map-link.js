@@ -1,0 +1,6 @@
+(() => {
+  const destination = () => { const name=typeof currentUser==='function'?currentUser():'', account=typeof users==='function'?users()[name]:null; return account?.address || '부산광역시'; };
+  const openMap = () => { const url='https://www.google.com/maps/dir/?api=1&origin='+encodeURIComponent('부산공동어시장')+'&destination='+encodeURIComponent(destination())+'&travelmode=driving'; window.open(url,'_blank','noopener'); };
+  const addMapLink = () => { const map=document.querySelector('.route-map'),card=document.querySelector('.route-card'); if(!map||!card||map.dataset.mapLinked)return; map.dataset.mapLinked='true'; map.setAttribute('role','button');map.setAttribute('tabindex','0');map.setAttribute('aria-label','지도에서 배송 경로 보기');map.insertAdjacentHTML('beforeend','<button class="map-open-hint" type="button">지도 경로 보기 ↗</button>');map.addEventListener('click',event=>{if(event.target.closest('.map-open-hint')||event.target===map)openMap()});map.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();openMap()}}); const render=()=>{const destinationBox=card.querySelector('.route-info div:nth-child(2)');if(destinationBox)destinationBox.innerHTML=`<small>도착지</small><strong class="route-destination">${destination()}</strong>`};document.addEventListener('login-complete',render);render(); };
+  setTimeout(addMapLink,100);
+})();
