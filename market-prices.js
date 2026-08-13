@@ -1,11 +1,16 @@
 (() => {
-  const items=[
-    ['\uc5b4\ub958','\uace0\ub4f1\uc5b4'],['\uc5b4\ub958','\uac08\uce58'],['\uc5b4\ub958','\uad11\uc5b4'],['\uc5b4\ub958','\uc5f0\uc5b4'],['\uc5b4\ub958','\ucc38\ub3d4'],['\uc5b4\ub958','\ubc29\uc5b4'],['\uc5b4\ub958','\uc0bc\uce58'],['\uc5b4\ub958','\uc870\uae30'],['\uc5b4\ub958','\uba85\ud0dc'],['\uc5b4\ub958','\ub300\uad6c'],['\uc5b4\ub958','\uc544\uadc0'],['\uc5b4\ub958','\ubcd1\uc5b4'],['\uc5b4\ub958','\uba78\uce58'],
-    ['\uc5f0\uccb4\ub958','\uc624\uc9d5\uc5b4'],['\uc5f0\uccb4\ub958','\uac11\uc624\uc9d5\uc5b4'],['\uc5f0\uccb4\ub958','\ub099\uc9c0'],['\uc5f0\uccb4\ub958','\uc8fc\uafb8\ubbf8'],['\uc5f0\uccb4\ub958','\ubb38\uc5b4'],
-    ['\uac11\uac01\ub958','\uaf43\uac8c'],['\uac11\uac01\ub958','\ub300\uac8c'],['\uac11\uac01\ub958','\ud0b9\ud06c\ub7a9'],['\uac11\uac01\ub958','\uc0c8\uc6b0'],
-    ['\ud328\ub958','\uc804\ubcf5'],['\ud328\ub958','\uad74'],['\ud328\ub958','\ubc14\uc9c0\ub77d'],['\ud328\ub958','\uaf2c\ub9c9'],['\ud328\ub958','\uac00\ub9ac\ube44'],['\ud328\ub958','\ud64d\ud569'],['\ud328\ub958','\uc18c\ub77c'],
-    ['\uae30\ud0c0','\ud574\uc0bc'],['\uae30\ud0c0','\uba4d\uac8c'],['\ud574\uc870\ub958','\ubbf8\uc5ed'],['\ud574\uc870\ub958','\ub2e4\uc2dc\ub9c8'],['\ud574\uc870\ub958','\uae40']
+  const items = [
+    ['어류','고등어'],['어류','갈치'],['어류','광어'],['어류','연어'],['어류','참돔'],['어류','방어'],['어류','삼치'],['어류','조기'],['어류','명태'],['어류','대구'],['어류','아귀'],['어류','병어'],['어류','멸치'],
+    ['연체류','오징어'],['연체류','갑오징어'],['연체류','낙지'],['연체류','주꾸미'],['연체류','문어'],
+    ['갑각류','꽃게'],['갑각류','대게'],['갑각류','킹크랩'],['갑각류','새우'],
+    ['패류','전복'],['패류','굴'],['패류','바지락'],['패류','꼬막'],['패류','가리비'],['패류','홍합'],['패류','소라'],
+    ['기타','해삼'],['기타','멍게'],['해조류','미역'],['해조류','다시마'],['해조류','김']
   ];
-  window.showAllPrices = button => {if(button.dataset.expanded)return;const grid=document.querySelector('.market-grid');items.forEach(([category,name],index)=>{const price=5200+(index*1370%25400);const card=document.createElement('article');card.className='price-card all-price';card.innerHTML=`<div class="card-top"><span class="pill">${category}</span><span class="origin">\uc2e4\uc2dc\uac04 \uc2dc\uc138</span></div><div class="product-image"></div><h3>${name}</h3><p>\ub2f9\uc77c \uc785\uace0 / \ud45c\uc900 \ud488\ubaa9</p><div class="price"><strong>₩ ${price.toLocaleString()}</strong><span class="up">\u25b2 \uc2dc\uc138 \ud655\uc778</span></div><div class="bar-row"><span>\uc0b0\uc9c0\uac00 \ud3ec\ud568</span><span>1kg \uae30\uc900</span></div><div class="price-bar"><i style="width:${45+index%40}%"></i></div><button class="add-cart" onclick="addCart('${name}',${price})">\uc7a5\ubc14\uad6c\ub2c8 \ub2f4\uae30 <b>+</b></button>`;grid.appendChild(card)});button.dataset.expanded='true';button.textContent='\uc804\uccb4 37\uac1c \ud488\ubaa9 \uc2dc\uc138 \ud45c\uc2dc \uc911';button.disabled=true};
-  const trigger=document.querySelector('#market .ghost');if(trigger)trigger.addEventListener('click',event=>{event.stopImmediatePropagation();window.showAllPrices(trigger)},true);
+  const grid = () => document.querySelector('.market-grid');
+  const card = ([category, name], extra = false) => `<article class="price-card catalog-price${extra ? ' catalog-extra' : ''}" data-product="${name}"><div class="card-top"><span class="pill">${category}</span><span class="origin">승인 재고 합산</span></div><div class="product-image"></div><h3>${name}</h3><p>판매자 승인 재고 · 500g 단위</p><div class="price"><strong>재고 확인 중</strong><span class="up">실시간 합산</span></div><div class="bar-row"><span>판매자 등록가 기준</span><span>500g 기준</span></div><div class="price-bar"><i style="width:0%"></i></div><button class="add-cart" disabled>재고 확인 중 <b>—</b></button></article>`;
+  function renderInitial() { const root = grid(); if (!root || root.querySelector('.catalog-price')) return; root.innerHTML = items.slice(0, 3).map(item => card(item)).join(''); }
+  window.marketCatalogItems = items;
+  window.showAllPrices = button => { const root = grid(); if (button.dataset.expanded) { root.querySelectorAll('.catalog-extra').forEach(node => node.remove()); delete button.dataset.expanded; button.textContent = '전체 시세 보기 →'; } else { root.insertAdjacentHTML('beforeend', items.slice(3).map(item => card(item, true)).join('')); button.dataset.expanded = 'true'; button.textContent = '전체 시세 닫기 ↑'; } window.dispatchEvent(new Event('catalog-rendered')); };
+  renderInitial();
+  const trigger = document.querySelector('#market .ghost'); if (trigger) trigger.addEventListener('click', event => { event.preventDefault(); window.showAllPrices(trigger); });
 })();

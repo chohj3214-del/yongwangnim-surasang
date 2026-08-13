@@ -1,55 +1,22 @@
 (() => {
   const normalize = value => String(value || '').replace(/\s/g, '');
-
+  const matching = (name, inventory) => inventory.filter(item => normalize(item.product_name).includes(normalize(name)));
+  const money = value => `₩ ${Number(value || 0).toLocaleString()}`;
   function updateCatalogStock() {
     const inventory = Array.isArray(window.approvedInventorySnapshot) ? window.approvedInventorySnapshot : [];
-    document.querySelectorAll('.market-grid .all-price').forEach(card => {
-      card.dataset.liveReady = '1';
-      const name = card.querySelector('h3')?.textContent.trim();
-      if (!name) return;
-      const matches = inventory.filter(item => normalize(item.product_name).includes(normalize(name)));
-      const availableItems = matches.filter(item => Number(item.quantity) >= 500);
-      const total = matches.reduce((sum, item) => sum + Math.max(0, Number(item.quantity) || 0), 0);
-      let stock = card.querySelector('.catalog-stock');
-      if (!stock) {
-        stock = document.createElement('p');
-        stock.className = 'catalog-stock';
-        card.querySelector('h3')?.after(stock);
-      }
-      stock.textContent = total >= 500 ? `실시간 재고 ${total}g` : '실시간 재고 500g 미만 · 거래 중지';
-      const button = card.querySelector('.add-cart');
-      card.classList.toggle('inventory-sold-out', total <= 0);
-      if (!button) return;
-      if (total < 500) {
-        button.disabled = true;
-        button.innerHTML = '재고 부족 <b>—</b>';
-        button.onclick = null;
-      } else {
-        const item = availableItems[0];
-        const price = Number(item.wholesale_price) || 0;
-        const priceNode = card.querySelector('.price strong');
-        if (priceNode) priceNode.textContent = `₩ ${price.toLocaleString()}`;
-        button.disabled = false;
-        button.innerHTML = '장바구니 담기 <b>+</b>';
-        button.onclick = () => addRemoteCart(item.id, name, price, Number(item.quantity));
-      }
+    document.querySelectorAll('.market-grid .catalog-price').forEach(card => {
+      const name = card.dataset.product || card.querySelector('h3')?.textContent.trim(); if (!name) return;
+      const items = matching(name, inventory), total = items.reduce((sum, item) => sum + Math.max(0, Number(item.quantity) || 0), 0);
+      const available = items.filter(item => Number(item.quantity) >= 500).sort((a, b) => Number(a.wholesale_price) - Number(b.wholesale_price)), lowest = available[0];
+      let stock = card.querySelector('.catalog-stock'); if (!stock) { stock = document.createElement('p'); stock.className = 'catalog-stock'; card.querySelector('h3')?.after(stock); }
+      stock.textContent = total >= 500 ? `판매자 재고 합산 ${total.toLocaleString()}g · ${available.length}건` : '승인된 판매 재고 없음 · 거래 중지';
+      card.classList.toggle('inventory-sold-out', total < 500);
+      const price = card.querySelector('.price strong'), button = card.querySelector('.add-cart'); if (!button) return;
+      if (!lowest) { if (price) price.textContent = '재고 없음'; button.disabled = true; button.innerHTML = '거래 중지 <b>—</b>'; button.onclick = null; }
+      else { if (price) price.textContent = money(lowest.wholesale_price); button.disabled = false; button.innerHTML = '500g 장바구니 담기 <b>+</b>'; button.onclick = () => window.addCatalogCart?.(name); }
     });
   }
-
-  document.addEventListener('click', event => {
-    const button = event.target.closest('.all-price .add-cart');
-    if (!button) return;
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    const card = button.closest('.all-price');
-    const name = card?.querySelector('h3')?.textContent.trim();
-    const inventory = Array.isArray(window.approvedInventorySnapshot) ? window.approvedInventorySnapshot : [];
-    const item = inventory.find(entry => normalize(entry.product_name).includes(normalize(name)) && Number(entry.quantity) > 0);
-    if (!item) { toast('재고가 없어 장바구니에 담을 수 없습니다.'); return; }
-    addRemoteCart(item.id, name, Number(item.wholesale_price), Number(item.quantity));
-  }, true);
-
-  new MutationObserver(updateCatalogStock).observe(document.querySelector('.market-grid'), { childList: true });
-  setInterval(updateCatalogStock, 1000);
-  updateCatalogStock();
+  document.addEventListener('click', event => { const button = event.target.closest('.catalog-price .add-cart'); if (!button || button.disabled) return; event.preventDefault(); event.stopImmediatePropagation(); window.addCatalogCart?.(button.closest('.catalog-price')?.dataset.product); }, true);
+  window.addEventListener('inventory-refreshed', updateCatalogStock); window.addEventListener('catalog-rendered', updateCatalogStock);
+  new MutationObserver(updateCatalogStock).observe(document.querySelector('.market-grid'), { childList: true }); setInterval(updateCatalogStock, 1000); updateCatalogStock();
 })();
