@@ -2,16 +2,34 @@
   const imageFor = name => {
     const value = (name || '').replace(/\s/g, '');
     if (/연어/.test(value)) return 'salmon-photo';
-    if (/대구|명태/.test(value)) return 'cod-photo';
+    if (/대구/.test(value)) return 'cod-distinct-photo';
+    if (/명태/.test(value)) return 'pollock-photo';
     if (/광어|가자미|병어/.test(value)) return 'flatfish-photo';
-    if (/오징어|갑오징어/.test(value)) return 'squid-photo';
+    if (/갑오징어/.test(value)) return 'cuttlefish-photo';
+    if (/오징어/.test(value)) return 'squid-photo';
     if (/새우/.test(value)) return 'shrimp-photo';
     if (/김/.test(value)) return 'gim-photo';
     if (/미역/.test(value)) return 'wakame-photo';
     if (/다시마/.test(value)) return 'kelp-photo';
-    if (/전복|굴|바지락|꼬막|가리비|홍합|소라/.test(value)) return 'shellfish-photo';
+    if (/굴/.test(value)) return 'oyster-photo';
+    if (/바지락/.test(value)) return 'clam-photo';
+    if (/꼬막/.test(value)) return 'cockle-photo';
+    if (/가리비/.test(value)) return 'scallop-photo';
+    if (/홍합/.test(value)) return 'mussel-photo';
+    if (/소라/.test(value)) return 'conch-photo';
+    if (/해삼/.test(value)) return 'sea-cucumber-photo';
+    if (/멍게/.test(value)) return 'sea-squirt-photo';
+    if (/전복/.test(value)) return 'abalone-photo';
+    if (/킹크랩/.test(value)) return 'king-crab-photo';
+    if (/대게/.test(value)) return 'snow-crab-photo';
     if (/게|크랩/.test(value)) return 'crab-photo';
-    if (/문어|낙지|쭈꾸미/.test(value)) return 'octopus-photo';
+    if (/쭈꾸미/.test(value)) return 'webfoot-octopus-photo';
+    if (/낙지/.test(value)) return 'longarm-octopus-photo';
+    if (/문어/.test(value)) return 'octopus-photo';
+    if (/참돔/.test(value)) return 'red-seabream-photo';
+    if (/방어/.test(value)) return 'yellowtail-photo';
+    if (/삼치/.test(value)) return 'spanish-mackerel-photo';
+    if (/조기/.test(value)) return 'yellow-croaker-photo';
     return 'fish-photo';
   };
   const applyPhotos = () => document.querySelectorAll('.price-card').forEach(card => {
