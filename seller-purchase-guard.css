@@ -1,0 +1,9 @@
+body.seller-mode .cart-fab,
+body.seller-mode .price-card .add-cart,
+body.seller-mode .price-card .market-cart-minus,
+body.seller-mode .delivery-section,
+body.seller-mode .delivery-schedule,
+body.seller-mode .order-heading,
+body.seller-mode .orders,
+body.seller-mode .quick-actions>button:not(.inventory-action){display:none!important}
+body.seller-mode .market-cart-actions{display:none!important}
