@@ -1,0 +1,5 @@
+.modal:has(.admin-management-panel){max-height:86vh;overflow-y:auto}
+.admin-member-list{max-height:230px;overflow-y:auto;border-top:1px solid #e5efec}
+.admin-member-list article{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 2px;border-bottom:1px solid #e8efed}
+.admin-member-list b,.admin-member-list small{display:block}.admin-member-list b{font-size:12px;color:#224d56}.admin-member-list small{margin-top:4px;font-size:10px;color:#819194}
+.admin-member-list .admin-account-delete{flex:none}
